@@ -5,25 +5,22 @@ import java.sql.*;
 import java.util.Vector;
 import java.text.*;
 
-class Other extends JPanel{
-	
-}
 ///这是一个登录类。设计成一个继承容器的类。
 class loggins extends JPanel
 {
-   
- private static final long serialVersionUID = 1L;
-///WIDTH是指整个顶层框架的宽度。
-///HEIGHT是指整个顶层框架的长度。
- static final int WIDTH=300;
- static final int HEIGHT=150;
-JFrame loginframe;
-///此方法用来添加控件到容器中
-///按照网格组布局方式排列组件的方法
-///x指控件位于第几列。
-///y指控件位于第几行。
-///w指控件需要占几列。
-///h指控件需要占几行。
+   private int grade;
+   private static final long serialVersionUID = 1L;
+   //WIDTH是指整个顶层框架的宽度。
+   //HEIGHT是指整个顶层框架的长度。
+   static final int WIDTH=300;
+   static final int HEIGHT=150;
+   JFrame loginframe;
+   //此方法用来添加控件到容器中
+   //按照网格组布局方式排列组件的方法
+   //x指控件位于第几列。
+   //y指控件位于第几行。
+   //w指控件需要占几列。
+   //h指控件需要占几行。
     public void add(Component c,GridBagConstraints constraints,int x,int y,int w,int h)
     {
         constraints.gridx=x;
@@ -47,7 +44,7 @@ JFrame loginframe;
 ///cancel.addActionListener是一个退出系统和界面动作事件的监听方法。
     loggins()
     {
-        loginframe=new JFrame("我的通讯簿系统");
+        loginframe=new JFrame("工资管理系统");
         loginframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GridBagLayout lay=new GridBagLayout(); 
         setLayout(lay);                       
@@ -109,9 +106,13 @@ JFrame loginframe;
 				// System.out.println("z = " + z);
 				if (z==true) {
 	//				new Other(nametext, passwordtext); //此界面就是后面的主界面
+					JOptionPane.showMessageDialog(null, "您已登录成功！","系统提示", JOptionPane.INFORMATION_MESSAGE);
+					MainFrame mianFrame = new MainFrame(grade);
+	//				mainFrame.setVisible(true);
 					loginframe.dispose();
                 } else if(z==false) {
-                    nameinput.setText("");
+                	JOptionPane.showMessageDialog(null, "密码或用户名错误，请重新登录!","系统提示", JOptionPane.ERROR_MESSAGE);
+                	nameinput.setText("");
                     passwordinput.setText("");
                 }
             }
@@ -121,6 +122,7 @@ JFrame loginframe;
         {
             public void actionPerformed(ActionEvent Event)
             {
+            	JOptionPane.showMessageDialog(null, "退出系统！" ,"系统提示", JOptionPane.CANCEL_OPTION);
                 loginframe.dispose();
             }
         });
@@ -129,7 +131,7 @@ JFrame loginframe;
     public boolean   CheckLogin (String name,String pwd) throws InstantiationException, IllegalAccessException
    {
        Connection con=null;
-       String url1="jdbc:mysql://127.0.0.1:3306/wan";// JDBC ODBC 桥连接mysql 数据库
+       String url1="jdbc:mysql://127.0.0.1:3306/Intership";// JDBC ODBC 桥连接mysql 数据库
        String username="root";
        String password="1";
        try
@@ -137,16 +139,17 @@ JFrame loginframe;
            Class.forName("com.mysql.jdbc.Driver").newInstance();
          
            con=DriverManager.getConnection(url1,username,password);
-           String sql="select * from loggin where sname= '"+name+"' and passwd = '"+pwd + "'";
+           String sql="select * from Login where Loginname= '"+name+"' and secret = '"+pwd + "'";
            
-           System.out.println("sql = " + sql);
-           Statement st=con.createStatement();
-                  
+           Statement st=con.createStatement();       
            ResultSet  rs=st.executeQuery(sql);
           
            while(rs.next())
            {
-               return true;
+        	   //返回等级
+        	   grade = Integer.parseInt(rs.getString("Grade"));
+     
+        	   return true;
            }
             return false;
        }
